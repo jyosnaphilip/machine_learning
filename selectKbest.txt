@@ -1,0 +1,39 @@
+sklearn.feature_selection.SelectKBest
+class sklearn.feature_selection.SelectKBest(score_func=<function f_classif>, *, k=10)[source]
+Select features according to the k highest scores.
+
+Read more in the User Guide.
+
+Parameters:
+score_funccallable, default=f_classif
+Function taking two arrays X and y, and returning a pair of arrays (scores, pvalues) or a single array with scores. Default is f_classif (see below “See Also”). The default function only works with classification tasks.
+
+New in version 0.18.
+
+kint or “all”, default=10
+Number of top features to select. The “all” option bypasses selection, for use in a parameter search.
+
+Attributes:
+scores_array-like of shape (n_features,)
+Scores of features.
+
+pvalues_array-like of shape (n_features,)
+p-values of feature scores, None if score_func returned only scores.
+
+n_features_in_int
+Number of features seen during fit.
+
+New in version 0.24.
+
+feature_names_in_ndarray of shape (n_features_in_,)
+Names of features seen during fit. Defined only when X has feature names that are all strings.
+
+New in version 1.0.
+>>> from sklearn.datasets import load_digits
+>>> from sklearn.feature_selection import SelectKBest, chi2
+>>> X, y = load_digits(return_X_y=True)
+>>> X.shape
+(1797, 64)
+>>> X_new = SelectKBest(chi2, k=20).fit_transform(X, y)
+>>> X_new.shape
+(1797, 20)

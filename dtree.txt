@@ -1,0 +1,167 @@
+sklearn.tree.DecisionTreeClassifier¶
+
+Parameters:
+criterion {“gini”, “entropy”, “log_loss”}, default=”gini”
+
+
+splitter {“best”, “random”}, default=”best”
+The strategy used to choose the split at each node. 
+Supported strategies are “best” to choose the best split and “random” to choose the best random split.
+
+max_depth int, default=None
+The maximum depth of the tree.
+ If None, then nodes are expanded until all leaves are pure or until all leaves contain less than min_samples_split samples.
+
+min_samples_split int or float, default=2
+The minimum number of samples required to split an internal node:
+If int, then consider min_samples_split as the minimum number.
+
+min_samples_leaf int or float, default=1
+The minimum number of samples required to be at a leaf node. 
+A split point at any depth will only be considered if it leaves at least min_samples_leaf training samples 
+in each of the left and right branches. This may have the effect of smoothing the model, especially in regression.
+
+min_weight_fraction_leaf float, default=0.0
+The minimum weighted fraction of the sum total of weights (of all the input samples) required to be at a leaf node.
+ Samples have equal weight when sample_weight is not provided.
+
+max_features int, float or {“sqrt”, “log2”}, default=None
+The number of features to consider when looking for the best split:
+If “sqrt”, then max_features=sqrt(n_features).
+If “log2”, then max_features=log2(n_features).
+
+
+random_state int, RandomState instance or None, default=None
+Controls the randomness of the estimator. The features are always randomly permuted at each split, 
+even if splitter is set to "best". When max_features < n_features, the algorithm will select max_features at 
+random at each split before finding the best split among them. But the best found split may vary across different
+ runs, even if max_features=n_features. That is the case, if the improvement of the criterion is identical for several
+  splits and one split has to be selected at random. To obtain a deterministic behaviour during fitting, random_state 
+  has to be fixed to an integer. 
+
+max_leaf_nodes int, default=None
+Grow a tree with max_leaf_nodes in best-first fashion. Best nodes are defined as relative reduction
+ in impurity. If None then unlimited number of leaf nodes.
+
+min_impurity_decrease float, default=0.0
+A node will be split if this split induces a decrease of the impurity greater than or equal to this value.
+
+class_weight dict, list of dict or “balanced”, default=None
+Weights associated with classes in the form {class_label: weight}. 
+If None, all classes are supposed to have weight one. For multi-output problems, a list of dicts can be provided
+ in the same order as the columns of y.
+
+ccp_alpha non-negative float, default=0.0
+Complexity parameter used for Minimal Cost-Complexity Pruning.
+ The subtree with the largest cost complexity that is smaller than ccp_alpha will be chosen. 
+ By default, no pruning is performed. See Minimal Cost-Complexity Pruning for details.
+
+monotonic_cst array-like of int of shape (n_features), default=None
+Indicates the monotonicity constraint to enforce on each feature.
+1: monotonic increase
+0: no constraint
+-1: monotonic decrease
+If monotonic_cst is None, no constraints are applied.
+
+Attributes:
+classes_ ndarray of shape (n_classes,) or list of ndarray
+The classes labels (single output problem), or a list of arrays of class labels (multi-output problem).
+
+feature_importances_ ndarray of shape (n_features,)
+Return the feature importances.
+
+max_features_ int
+The inferred value of max_features.
+
+n_classes_ int or list of int
+The number of classes (for single output problems), 
+
+n_features_in_ int
+Number of features seen during fit.
+
+
+
+feature_names_in_ ndarray of shape (n_features_in_,)
+Names of features seen during fit. Defined only when X has feature names that are all strings.
+
+n_outputs_ int
+The number of outputs when fit is performed.
+
+tree_ Tree instance
+The underlying Tree object. 
+
+
+Methods
+
+apply(X[, check_input])
+
+Return the index of the leaf that each sample is predicted as.
+
+cost_complexity_pruning_path(X, y[, ...])
+
+Compute the pruning path during Minimal Cost-Complexity Pruning.
+
+decision_path(X[, check_input])
+
+Return the decision path in the tree.
+
+fit(X, y[, sample_weight, check_input])
+
+Build a decision tree classifier from the training set (X, y).
+
+get_depth()
+
+Return the depth of the decision tree.
+
+
+
+get_n_leaves()
+
+Return the number of leaves of the decision tree.
+
+get_params([deep])
+
+Get parameters for this estimator.
+
+predict(X[, check_input])
+
+Predict class or regression value for X.
+
+predict_log_proba(X)
+
+Predict class log-probabilities of the input samples X.
+
+predict_proba(X[, check_input])
+
+Predict class probabilities of the input samples X.
+
+score(X, y[, sample_weight])
+
+Return the mean accuracy on the given test data and labels.
+
+
+
+set_params(**params)
+
+Set the parameters of this estimator.
+
+
+
+set_score_request(*[, sample_weight])
+
+Request metadata passed to the score method.
+
+apply(X, check_input=True)[source]
+Return the index of the leaf that each sample is predicted as.
+
+
+
+Parameters:
+X {array-like, sparse matrix} of shape (n_samples, n_features)
+The input samples. Internally, it will be converted to dtype=np.float32 and if a sparse matrix is provided to a sparse 
+csr_matrix.
+
+check_input bool, default=True
+Allow to bypass several input checking. Don’t use this parameter unless you know what you’re doing.
+
+

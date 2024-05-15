@@ -1,0 +1,24 @@
+sklearn.pipeline.make_pipeline
+Parameters:
+*stepslist of Estimator objects
+List of the scikit-learn estimators that are chained together.
+
+memorystr or object with the joblib.Memory interface, default=None
+Used to cache the fitted transformers of the pipeline. The last step will never be cached, even if it is a transformer. By default, no caching is performed. If a string is given, it is the path to the caching directory. Enabling caching triggers a clone of the transformers before fitting. Therefore, the transformer instance given to the pipeline cannot be inspected directly. Use the attribute named_steps or steps to inspect estimators within the pipeline. Caching the transformers is advantageous when fitting is time consuming.
+
+verbosebool, default=False
+If True, the time elapsed while fitting each step will be printed as it is completed.
+
+Returns:
+pPipeline
+Returns a scikit-learn Pipeline object.
+
+
+Examples
+
+>>> from sklearn.naive_bayes import GaussianNB
+>>> from sklearn.preprocessing import StandardScaler
+>>> from sklearn.pipeline import make_pipeline
+>>> make_pipeline(StandardScaler(), GaussianNB(priors=None))
+Pipeline(steps=[('standardscaler', StandardScaler()),
+                ('gaussiannb', GaussianNB())])

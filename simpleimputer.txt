@@ -1,0 +1,2 @@
+class sklearn.impute.SimpleImputer(*, missing_values=nan, strategy='mean', 
+fill_value=None, copy=True, add_indicator=False, keep_empty_features=False)[source]¶

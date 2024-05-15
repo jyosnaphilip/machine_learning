@@ -1,0 +1,91 @@
+sklearn.preprocessing.MinMaxScaler
+class sklearn.preprocessing.MinMaxScaler(feature_range=(0, 1), *, copy=True, clip=False)[source]
+Transform features by scaling each feature to a given range.
+
+This estimator scales and translates each feature individually such that it is in the given range on the training set, e.g. between zero and one.
+
+The transformation is given by:
+
+X_std = (X - X.min(axis=0)) / (X.max(axis=0) - X.min(axis=0))
+X_scaled = X_std * (max - min) + min
+where min, max = feature_range.
+
+This transformation is often used as an alternative to zero mean, unit variance scaling.
+
+MinMaxScaler doesn’t reduce the effect of outliers, but it linearly scales them down into a fixed range, where the largest occurring data point corresponds to the maximum value and the smallest one corresponds to the minimum value. For an example visualization, refer to Compare MinMaxScaler with other scalers.
+
+Read more in the User Guide.
+
+Parameters:
+feature_rangetuple (min, max), default=(0, 1)
+Desired range of transformed data.
+
+copybool, default=True
+Set to False to perform inplace row normalization and avoid a copy (if the input is already a numpy array).
+
+clipbool, default=False
+Set to True to clip transformed values of held-out data to provided feature range.
+
+New in version 0.24.
+
+Attributes:
+min_ ndarray of shape (n_features,)
+Per feature adjustment for minimum. Equivalent to min - X.min(axis=0) * self.scale_
+
+scale_ ndarray of shape (n_features,)
+Per feature relative scaling of the data. Equivalent to (max - min) / (X.max(axis=0) - X.min(axis=0))
+
+New in version 0.17: scale_ attribute.
+
+data_min_ndarray of shape (n_features,)
+Per feature minimum seen in the data
+
+New in version 0.17: data_min_
+
+data_max_ndarray of shape (n_features,)
+Per feature maximum seen in the data
+
+New in version 0.17: data_max_
+
+data_range_ndarray of shape (n_features,)
+Per feature range (data_max_ - data_min_) seen in the data
+
+New in version 0.17: data_range_
+
+n_features_in_int
+Number of features seen during fit.
+
+New in version 0.24.
+
+n_samples_seen_int
+The number of samples processed by the estimator. It will be reset on new calls to fit, but increments across partial_fit calls.
+
+feature_names_in_ndarray of shape (n_features_in_,)
+Names of features seen during fit. Defined only when X has feature names that are all strings.
+
+New in version 1.0.
+
+See also
+minmax_scale
+Equivalent function without the estimator API.
+
+Notes
+
+NaNs are treated as missing values: disregarded in fit, and maintained in transform.
+
+Examples
+
+>>> from sklearn.preprocessing import MinMaxScaler
+>>> data = [[-1, 2], [-0.5, 6], [0, 10], [1, 18]]
+>>> scaler = MinMaxScaler()
+>>> print(scaler.fit(data))
+MinMaxScaler()
+>>> print(scaler.data_max_)
+[ 1. 18.]
+>>> print(scaler.transform(data))
+[[0.   0.  ]
+ [0.25 0.25]
+ [0.5  0.5 ]
+ [1.   1.  ]]
+>>> print(scaler.transform([[2, 2]]))
+[[1.5 0. ]]

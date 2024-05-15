@@ -1,0 +1,343 @@
+Exhaustive search over specified parameter values for an estimator.
+
+Important members are fit, predict.
+
+GridSearchCV implements a “fit” and a “score” method. It also implements “score_samples”, 
+“predict”, “predict_proba”, “decision_function”, “transform” and “inverse_transform” 
+if they are implemented in the estimator used.
+
+The parameters of the estimator used to apply these methods are optimized by cross-validated 
+grid-search over a parameter grid.
+
+Parameters:
+estimator estimator object
+This is assumed to implement the scikit-learn estimator interface. 
+Either estimator needs to provide a score function, or scoring must be passed.
+
+param_grid dict or list of dictionaries
+Dictionary with parameters names (str) as keys and lists of parameter settings to 
+try as values, or a list of such dictionaries, in which case the grids spanned by each
+ dictionary in the list are explored.
+  This enables searching over any sequence of parameter settings.
+
+scoring str, callable, list, tuple or dict, default=None
+Strategy to evaluate the performance of the cross-validated model on the test set.
+
+If scoring represents a single score, one can use:
+a single string (see The scoring parameter: defining model evaluation rules);
+a callable (see Defining your scoring strategy from metric functions) that returns a single value.
+If scoring represents multiple scores, one can use:
+a list or tuple of unique strings;
+a callable returning a dictionary where the keys are the metric names and the values are the metric scores;
+a dictionary with metric names as keys and callables a values.
+
+
+n_jobs int, default=None
+Number of jobs to run in parallel. None means 1 unless in a joblib.parallel_backend context.
+ -1 means using all processors. 
+
+
+refit bool, str, or callable, default=True
+Refit an estimator using the best found parameters on the whole dataset.
+
+For multiple metric evaluation, this needs to be a str denoting the scorer that would be used to find the best parameters
+ for refitting the estimator at the end.
+
+Where there are considerations other than maximum score in choosing a best estimator, refit can be set to a function 
+which returns the selected best_index_ given cv_results_. In that case, the best_estimator_ and best_params_ 
+will be set according to the returned best_index_ while the best_score_ attribute will not be available.
+
+The refitted estimator is made available at the best_estimator_ attribute and permits using predict directly on this GridSearchCV instance.
+
+Also for multiple metric evaluation, the attributes best_index_, best_score_ and best_params_ will only be available
+ if refit is set and all of them will be determined w.r.t this specific scorer.
+
+cv int, cross-validation generator or an iterable, default=None
+Determines the cross-validation splitting strategy. Possible inputs for cv are:
+None, to use the default 5-fold cross validation,
+integer, to specify the number of folds in a (Stratified)KFold,
+CV splitter,
+An iterable yielding (train, test) splits as arrays of indices.
+For integer/None inputs, if the estimator is a classifier and y is either binary or multiclass,
+ StratifiedKFold is used. In all other cases, KFold is used. These splitters are instantiated with 
+ shuffle=False so the splits will be the same across calls.
+
+verbose int
+Controls the verbosity: the higher, the more messages.
+
+>1 : the computation time for each fold and parameter candidate is displayed;
+
+>2 : the score is also displayed;
+
+>3 : the fold and candidate parameter indexes are also displayed together with the starting time of the computation.
+
+pre_dispatch int, or str, default=’2*n_jobs’
+Controls the number of jobs that get dispatched during parallel execution. 
+Reducing this number can be useful to avoid an explosion of memory consumption when more jobs
+ get dispatched than CPUs can process. This parameter can be:
+None, in which case all the jobs are immediately created and spawned. Use this for lightweight and fast-running jobs, 
+to avoid delays due to on-demand spawning of the jobs
+An int, giving the exact number of total jobs that are spawned
+A str, giving an expression as a function of n_jobs, as in ‘2*n_jobs’
+error_score‘raise’ or numeric, default=np.nan
+Value to assign to the score if an error occurs in estimator fitting.
+ If set to ‘raise’, the error is raised. If a numeric value is given, 
+ FitFailedWarning is raised. This parameter does not affect the refit step, which will always raise the error.
+
+return_train_score bool, default=False
+If False, the cv_results_ attribute will not include training scores.
+ Computing training scores is used to get insights on how different parameter settings impact 
+ the overfitting/underfitting trade-off. However computing the scores on the training set can be computationally expensive
+  and is not strictly required to select the parameters that yield the best generalization performance.
+
+Attributes:
+cv_results_ dict of numpy (masked) ndarrays
+A dict with keys as column headers and values as columns, that can be imported into a pandas DataFrame.
+
+
+best_estimator_ estimator
+Estimator that was chosen by the search, i.e. estimator which gave highest score 
+(or smallest loss if specified) on the left out data. Not available if refit=False.
+
+best_score_ float
+Mean cross-validated score of the best_estimator
+
+best_params_ dict
+Parameter setting that gave the best results on the hold out data.
+
+best_index_ int
+The index (of the cv_results_ arrays) which corresponds to the best candidate parameter setting.
+
+scorer_ function or a dict
+Scorer function used on the held out data to choose the best parameters for the model.
+
+For multi-metric evaluation, this attribute holds the validated scoring dict
+ which maps the scorer key to the scorer callable.
+
+n_splits_ int
+The number of cross-validation splits (folds/iterations).
+
+refit_time_f loat
+Seconds used for refitting the best model on the whole dataset.
+
+multimetric_ bool
+Whether or not the scorers compute several metrics.
+
+classes_ ndarray of shape (n_classes,)
+Class labels.
+
+n_features_in_ int
+Number of features seen during fit.
+
+feature_names_in_ ndarray of shape (n_features_in_,)
+Names of features seen during fit. Only defined if best_estimator_ is defined (see the documentation for the refit parameter for more details) and that best_estimator_ exposes feature_names_in_ when fit.
+
+ParameterGrid
+Generates all the combinations of a hyperparameter grid.
+
+>>> from sklearn.model_selection import GridSearchCV
+>>> iris = datasets.load_iris()
+>>> parameters = {'kernel':('linear', 'rbf'), 'C':[1, 10]}
+>>> clf = GridSearchCV(svc, parameters)
+>>> clf.fit(iris.data, iris.target)
+GridSearchCV(estimator=SVC(),
+             param_grid={'C': [1, 10], 'kernel': ('linear', 'rbf')})
+>>> sorted(clf.cv_results_.keys())
+['mean_fit_time', 'mean_score_time', 'mean_test_score',...
+ 'param_C', 'param_kernel', 'params',...
+ 'rank_test_score', 'split0_test_score',...
+ 'split2_test_score', ...
+ 'std_fit_time', 'std_score_time', 'std_test_score']
+Methods
+
+decision_function(X)
+
+Call decision_function on the estimator with the best found parameters.
+
+fit(X[, y])
+
+Run fit with all sets of parameters.
+
+
+predict(X)
+
+
+score(X[, y])
+
+Return the score on the given data, if the estimator has been refit.
+
+transform(X)
+
+Call transform on the estimator with the best found parameters.
+
+property classes_
+Class labels.
+
+Parameters:
+Xindexable, length n_samples
+Must fulfill the input assumptions of the underlying estimator.
+
+Returns:
+y_scorendarray of shape (n_samples,) or (n_samples, n_classes) or (n_samples, n_classes * (n_classes-1) / 2)
+Result of the decision function for X based on the estimator with the best found parameters.
+
+fit(X, y=None, **params)[source]
+Run fit with all sets of parameters.
+
+Parameters:
+Xarray-like of shape (n_samples, n_features)
+Training vector, where n_samples is the number of samples and n_features is the number of features.
+
+yarray-like of shape (n_samples, n_output) or (n_samples,), default=None
+Target relative to X for classification or regression; None for unsupervised learning.
+
+**paramsdict of str -> object
+Parameters passed to the fit method of the estimator, the scorer, and the CV splitter.
+
+If a fit parameter is an array-like whose length is equal to num_samples then it will be split across CV groups along with X and y. For example, the sample_weight parameter is split because len(sample_weights) = len(X).
+
+Returns:
+selfobject
+Instance of fitted estimator.
+
+get_metadata_routing()[source]
+Get metadata routing of this object.
+
+Please check User Guide on how the routing mechanism works.
+
+New in version 1.4.
+
+Returns:
+routingMetadataRouter
+A MetadataRouter encapsulating routing information.
+
+get_params(deep=True)[source]
+Get parameters for this estimator.
+
+Parameters:
+deepbool, default=True
+If True, will return the parameters for this estimator and contained subobjects that are estimators.
+
+Returns:
+paramsdict
+Parameter names mapped to their values.
+
+inverse_transform(Xt)[source]
+Call inverse_transform on the estimator with the best found params.
+
+Only available if the underlying estimator implements inverse_transform and refit=True.
+
+Parameters:
+Xtindexable, length n_samples
+Must fulfill the input assumptions of the underlying estimator.
+
+Returns:
+X{ndarray, sparse matrix} of shape (n_samples, n_features)
+Result of the inverse_transform function for Xt based on the estimator with the best found parameters.
+
+property n_features_in_
+Number of features seen during fit.
+
+Only available when refit=True.
+
+predict(X)[source]
+Call predict on the estimator with the best found parameters.
+
+Only available if refit=True and the underlying estimator supports predict.
+
+Parameters:
+Xindexable, length n_samples
+Must fulfill the input assumptions of the underlying estimator.
+
+Returns:
+y_predndarray of shape (n_samples,)
+The predicted labels or values for X based on the estimator with the best found parameters.
+
+predict_log_proba(X)[source]
+Call predict_log_proba on the estimator with the best found parameters.
+
+Only available if refit=True and the underlying estimator supports predict_log_proba.
+
+Parameters:
+Xindexable, length n_samples
+Must fulfill the input assumptions of the underlying estimator.
+
+Returns:
+y_predndarray of shape (n_samples,) or (n_samples, n_classes)
+Predicted class log-probabilities for X based on the estimator with the best found parameters. The order of the classes corresponds to that in the fitted attribute classes_.
+
+predict_proba(X)[source]
+Call predict_proba on the estimator with the best found parameters.
+
+Only available if refit=True and the underlying estimator supports predict_proba.
+
+Parameters:
+Xindexable, length n_samples
+Must fulfill the input assumptions of the underlying estimator.
+
+Returns:
+y_predndarray of shape (n_samples,) or (n_samples, n_classes)
+Predicted class probabilities for X based on the estimator with the best found parameters. The order of the classes corresponds to that in the fitted attribute classes_.
+
+score(X, y=None, **params)[source]
+Return the score on the given data, if the estimator has been refit.
+
+This uses the score defined by scoring where provided, and the best_estimator_.score method otherwise.
+
+Parameters:
+Xarray-like of shape (n_samples, n_features)
+Input data, where n_samples is the number of samples and n_features is the number of features.
+
+yarray-like of shape (n_samples, n_output) or (n_samples,), default=None
+Target relative to X for classification or regression; None for unsupervised learning.
+
+**paramsdict
+Parameters to be passed to the underlying scorer(s).
+
+..versionadded:: 1.4
+Only available if enable_metadata_routing=True. See Metadata Routing User Guide for more details.
+
+Returns:
+scorefloat
+The score defined by scoring if provided, and the best_estimator_.score method otherwise.
+
+score_samples(X)[source]
+Call score_samples on the estimator with the best found parameters.
+
+Only available if refit=True and the underlying estimator supports score_samples.
+
+New in version 0.24.
+
+Parameters:
+Xiterable
+Data to predict on. Must fulfill input requirements of the underlying estimator.
+
+Returns:
+y_scorendarray of shape (n_samples,)
+The best_estimator_.score_samples method.
+
+set_params(**params)[source]
+Set the parameters of this estimator.
+
+The method works on simple estimators as well as on nested objects (such as Pipeline). The latter have parameters of the form <component>__<parameter> so that it’s possible to update each component of a nested object.
+
+Parameters:
+**paramsdict
+Estimator parameters.
+
+Returns:
+selfestimator instance
+Estimator instance.
+
+transform(X)[source]
+Call transform on the estimator with the best found parameters.
+
+Only available if the underlying estimator supports transform and refit=True.
+
+Parameters:
+Xindexable, length n_samples
+Must fulfill the input assumptions of the underlying estimator.
+
+Returns:
+Xt{ndarray, sparse matrix} of shape (n_samples, n_features)
+X transformed in the new space based on the estimator with the best found parameters.
